@@ -1,4 +1,7 @@
 import React, { FC, useState, ChangeEvent, FormEvent } from 'react';
+import {Box, Button, IconButton, List, ListItem, ListItemText, TextField} from '@mui/material';
+import './BoteList.css';
+import {Delete, Edit} from '@mui/icons-material';
 
 interface Bote {
   id: string;
@@ -52,33 +55,30 @@ const BoteList: FC<BoteListProps> = ({ name, data, onCreate, onUpdate, onDelete,
 
 
   return (
-    <div>
+    <Box className="Box" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <h2>{name}</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="name"
-          placeholder="Name"
-          value={formData.name}
-          onChange={handleFormChange}
-        />
-        <button type="submit">{editingId ? 'Update' : 'Create'}</button>
-        {editingId && <button type="button" onClick={handleCancelEdit}>Cancel</button>}
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 8}}>
+      <TextField className="name-input" label="Name" name="name" value={formData.name} onChange={handleFormChange} />
+      <Button sx={{ mr: 1 }} variant="contained" type="submit">{editingId === null ? 'Create' : 'Update'}</Button>
+      {editingId !== null && <Button variant="contained" onClick={handleCancelEdit}>Cancel</Button>}
       </form>
-      {error && <div>{error.message}</div>}
-      <h2>{name}s</h2>
-      <ul>
+      <List sx={{ width: '100%', maxWidth: 360 }}>
         {data.map(item => (
-          <li key={item.id}>
-            <div>{item.name}</div>
-            <div>
-                <button onClick={() => handleEdit(item)}>Edit</button>
-                <button onClick={() => onDelete(item.id)}>Delete</button>
-            </div>
-          </li>
+          <ListItem key={item.id} secondaryAction={
+            <>
+              <IconButton edge="end" aria-label="edit" onClick={() => handleEdit(item)}>
+                <Edit />
+              </IconButton>
+              <IconButton edge="end" aria-label="delete" onClick={() => onDelete(item.id)}>
+                <Delete />
+              </IconButton>
+            </>
+          }>
+            <ListItemText primary={item.name}/>
+          </ListItem>
         ))}
-      </ul>
-    </div>
+      </List>
+    </Box>
   );
 }
 
